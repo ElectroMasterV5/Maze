@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CameraControl : MonoBehaviour
 {
     public GameObject Camera;
     public GameObject Arrow;
+    public GameObject RedRaySet;
     public int BatteryRemain;
     public bool isCameraOpen = false;
     private float time = 0;
@@ -17,11 +19,15 @@ public class CameraControl : MonoBehaviour
     public Sprite B25;
 
     public Image BatteryPic;
+    private Renderer[] Rd;
     //public GameObject BatteryObject;
     // Start is called before the first frame update
     void Start()
     {
         BatteryRemain = 100;
+        Rd = RedRaySet.GetComponentsInChildren<Renderer>();
+
+        
     }
 
     // Update is called once per frame
@@ -35,6 +41,11 @@ public class CameraControl : MonoBehaviour
         if (isCameraOpen)
         {
             Arrow.SetActive(true);
+            for (int i = 0; i < Rd.Length; i++)
+            {
+                Rd[i].enabled = true;
+            }
+
             time += Time.deltaTime;
 
             if (time >= 1)
@@ -47,6 +58,10 @@ public class CameraControl : MonoBehaviour
         if (!isCameraOpen)
         {
             Arrow.SetActive(false);
+            for (int i = 0; i < Rd.Length; i++)
+            {
+                Rd[i].enabled = false;
+            }
         }
         if (BatteryRemain <= 0)
         {
@@ -87,5 +102,12 @@ public class CameraControl : MonoBehaviour
             BatteryRemain--;
         }
         
+    }
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.CompareTag("RedRay"))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }
